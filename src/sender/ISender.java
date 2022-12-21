@@ -1,6 +1,6 @@
 package sender;
 
-import java.io.IOException;
+import java.util.List;
 
 import recipient.Recipient;
 
@@ -8,9 +8,16 @@ import recipient.Recipient;
  * メール送信インターフェイス
  */
 public interface ISender {	
+	
 	/**
-	 * 送信処理
-	 * @return メール送信成否
+	 * 件名を返す
+	 * @return 件名
 	 */
-	public boolean send(Recipient recipient) throws IOException;
+	public String writeSubject();
+	
+	/**
+	 * メールの本文を返す
+	 * @return メール本文
+	 */
+	public String writeTextTo(List<Recipient> recipients);
 }

@@ -1,7 +1,7 @@
 package sender;
 
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import recipient.Recipient;
 
@@ -23,23 +23,34 @@ public class Sender {
 	/**
 	 * メールの種類と送信者オブジェクトのMap
 	 */
-	private HashMap<MailTypes, ISender> senders;
+	final private HashMap<MailTypes, ISender> senders;
 	
 	/**
 	 * 受信者
 	 */
-	private Recipient recipient;
+	private List<Recipient> recipients;
+
+	private Sender() {
+		HashMap<MailTypes, ISender> senders = new HashMap<>();
+		senders.put(MailTypes.GREETING_MAIL, new GreetingMailSender());
+		this.senders = senders;
+	}
 	
 	/**
 	 * コンストラクタ
 	 */
-	public Sender(Recipient recipient) {
-		
-		HashMap<MailTypes, ISender> senders = new HashMap<>();
-		senders.put(MailTypes.GREETING_MAIL, new GreetingMailSender());
-		this.senders = senders;
-		
-		this.recipient = recipient;
+	private Sender(final List<Recipient> recipients) {
+		this();
+		this.recipients = recipients;
+	}
+	
+	/**
+	 * ファクトリメソッド
+	 * @param recipient 受信者オブジェクト
+	 * @return Senderクラスのインスタンス
+	 */
+	public static Sender of(final List<Recipient> recipients) {
+		return new Sender(recipients);
 	}
 
 	/**
@@ -47,15 +58,10 @@ public class Sender {
 	 * @param mailType 送信するメールの種類
 	 * @param recipient 受信者オブジェクト
 	 */
-	public void send(MailTypes mailType) {
-		
+	public void send(final MailTypes mailType) {
 		ISender sender = this.senders.get(mailType);
 		
-		try {
-			sender.send(recipient);
-		} catch (IOException e) {
-			// TODO: handle exception
-		}
-		
+		System.out.println(sender.writeSubject());
+		System.out.println(sender.writeTextTo(this.recipients));
 	}
 }
